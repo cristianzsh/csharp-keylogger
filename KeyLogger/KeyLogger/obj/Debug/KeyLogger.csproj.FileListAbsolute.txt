@@ -1,0 +1,6 @@
+C:\Users\Jotalanusse\Desktop\csharp-keylogger-master\KeyLogger\KeyLogger\bin\Debug\KeyLogger.exe.config
+C:\Users\Jotalanusse\Desktop\csharp-keylogger-master\KeyLogger\KeyLogger\bin\Debug\KeyLogger.exe
+C:\Users\Jotalanusse\Desktop\csharp-keylogger-master\KeyLogger\KeyLogger\bin\Debug\KeyLogger.pdb
+C:\Users\Jotalanusse\Desktop\csharp-keylogger-master\KeyLogger\KeyLogger\obj\Debug\KeyLogger.csproj.CoreCompileInputs.cache
+C:\Users\Jotalanusse\Desktop\csharp-keylogger-master\KeyLogger\KeyLogger\obj\Debug\KeyLogger.exe
+C:\Users\Jotalanusse\Desktop\csharp-keylogger-master\KeyLogger\KeyLogger\obj\Debug\KeyLogger.pdb
